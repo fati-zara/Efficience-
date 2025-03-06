@@ -1,3 +1,26 @@
+import streamlit as st  # Importer Streamlit
+
+# Titre du site
+st.title("Tableau de Bord d'Efficience")
+
+# Exemple de données
+production = 1000  # Remplace par ta vraie valeur
+wsd = 1.2  # Work Standard Data
+nb_personnes = 5  # Nombre de personnes
+
+# Calcul de l'efficience
+efficience = ((production * wsd) / (nb_personnes * 460)) * 100
+
+# Affichage de l'efficience sous forme de texte
+st.metric(label="Efficience (%)", value=f"{efficience:.2f}%")
+
+# Ajouter un graphique avec Matplotlib
+import matplotlib.pyplot as plt
+
+fig, ax = plt.subplots()
+ax.bar(["Efficience"], [efficience], color='blue')
+ax.set_ylim(0, 100)  # Limite de la jauge
+st.pyplot(fig)  # Afficher le graphique
 # -*- coding: utf-8 -*-
 """Efficience
 
