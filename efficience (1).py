@@ -3,7 +3,7 @@ import streamlit as st  # Importer Streamlit
 # Titre du site
 st.title("Tableau de Bord d'Efficience")
 
-# Exemple de données
+# Exemple de données (remplace ces valeurs par tes vraies données)
 production = 1000  # Remplace par ta vraie valeur
 wsd = 1.2  # Work Standard Data
 nb_personnes = 5  # Nombre de personnes
@@ -22,41 +22,33 @@ ax.bar(["Efficience"], [efficience], color='blue')
 ax.set_ylim(0, 100)  # Limite de la jauge
 st.pyplot(fig)  # Afficher le graphique
 
-# Lecture du fichier Excel (tu devras remplacer par le chemin correct de ton fichier)
+# Charger et traiter des données à partir d'un fichier Excel (exemple ici)
 import pandas as pd
 
-# Exemple de lecture d'un fichier Excel
-# Remplace 'LIST.xlsx' par le chemin de ton fichier Excel téléchargé
-df = pd.read_excel('LIST.xlsx', engine='openpyxl')
+# Exemple de données simulées dans un DataFrame
+df = pd.DataFrame({
+    'FAMILLE': ['Famille A', 'Famille B', 'Famille C'],
+    'Efficience (%)': [85, 65, 92]
+})
 
-# Affiche les 5 premières lignes de tes données pour vérifier
-df.head()
-
-# Vérifie les types de données dans le DataFrame
-df.dtypes
-
-# Convertir la colonne 'NB PERSONNES' en numérique (entiers)
-df['NB PERSONNES'] = pd.to_numeric(df['NB PERSONNES'], errors='coerce')
-
-# Convertir la colonne 'TEMPS CYCLE' en numérique (entiers)
-df['TEMPS CYCLE'] = pd.to_numeric(df['TEMPS CYCLE'], errors='coerce')
-
-# Calculer l'efficience par famille
-df['Efficience (%)'] = ((40 * df['WSD']) / (df['NB PERSONNES'] * 460)) * 100
+# Calculer l'efficience par famille (ajusté si nécessaire)
+df['Efficience (%)'] = ((40 * df['Efficience (%)']) / (df['Efficience (%)'] * 460)) * 100
 
 # Grouper les données par famille et calculer la moyenne de l'efficience pour chaque famille
 efficience_par_famille = df.groupby('FAMILLE')['Efficience (%)'].mean().reset_index()
 
-# Afficher les résultats
-efficience_par_famille.head()
+# Afficher les résultats sous forme de tableau
+st.write("Efficience par Famille :")
+st.write(efficience_par_famille)
 
-# Visualiser avec Plotly pour afficher des jauges
+# Créer un graphique de jauge avec Plotly
 import plotly.graph_objects as go
 
-fig = go.Figure()
+fig2 = go.Figure()
 
+# Ajouter une jauge pour chaque famille
 for i, row in efficience_par_famille.iterrows():
-    fig.add_trace(go.Indicator(
+    fig2.add_trace(go.Indicator(
         mode="gauge+number",
         value=row['Efficience (%)'],
         title={"text": f"Famille: {row['FAMILLE']}"},
@@ -71,13 +63,14 @@ for i, row in efficience_par_famille.iterrows():
         }
     ))
 
-# Mettre en forme le tableau de bord
-fig.update_layout(
+# Mettre en forme le tableau de bord avec plusieurs jauges
+fig2.update_layout(
     title="Tableau de bord de l'efficience par famille",
     grid={'rows': len(efficience_par_famille), 'columns': 1},
     height=500 * len(efficience_par_famille),
     showlegend=False
 )
 
-# Afficher le tableau de bord
-st.plotly_chart(fig)
+# Afficher le graphique avec Plotly
+st.plotly_chart(fig2)
+
